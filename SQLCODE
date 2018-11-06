@@ -1,0 +1,131 @@
+create database gestao_frota
+
+use gestao_frota
+
+create table fornecedor(
+	id int identity primary key,
+		nome varchar(50) unique not null,
+		morada varchar(50),
+		codigo_postal varchar(8),
+		localidade varchar(50),
+		telefone int,
+		nif int
+);
+
+create table aquisicao(
+	id int identity primary key,
+	data datetime,
+	preco float,
+	kms float,
+);
+
+create table veiculo(
+	id int identity primary key,
+	matricula varchar(8),
+	n_chassis int,
+	ano_de_fabrico datetime,
+	condicao varchar(100)
+);
+create table revisoes(
+	id int identity primary key,
+	data datetime,
+	descricao varchar(100),
+	kms float,
+	preco float
+);
+
+create table oficina(
+	id int identity primary key,
+	nome varchar(50) unique not null,
+	morada varchar(50),
+	codigo_postal varchar(8),
+	localidade varchar(50),
+	telefone int,
+	nif int
+);
+
+create table modelo(
+	id int identity primary key,
+	marca varchar(50),
+	modelo varchar(50),
+	locacao int,
+	classe varchar(50),
+);
+
+create table vendaabate(
+	id int identity primary key,
+	data datetime,
+	preco int,
+	descricao varchar(100),
+);
+
+create table entidade(
+	id int identity primary key,
+	nome varchar(50) unique not null,
+	morada varchar(50),
+	codigo_postal varchar(8),
+	lcoalidade varchar(50),
+	nif int,
+	telefone int,
+	area_de_negocio varchar(50),
+);
+
+create table funcionario(
+	id int identity primary key,
+	nome varchar(50),
+	morada varchar(50),
+	codigo_postal varchar(8),
+	localidade varchar(50),
+	telefone int,
+	cargo varchar(50),
+	data_contratacao datetime,
+	nacionalidade varchar(50),
+	genero varchar(50),
+	departamento varchar(50),
+	nif int
+);
+
+create table requisicao(
+	id int identity primary key,
+	data_requesicao datetime,
+	dias_requesitados int,
+	preco float,
+	data_devolucao datetime,
+	estado_requesicao varchar(50)
+);
+
+create table tarefa(
+	id int identity primary key,
+	tipo varchar(100),
+	descricao varchar(100)
+);
+
+create table tarefa_veiculo(
+	fk_tarefa int foreign key references tarefa(id) not null,
+	fk_veiculo int foreign key references veiculo(id) not null
+);
+
+create table veiculo_requisicao(
+	fk_requisicao int foreign key references requisicao(id) not null,
+	fk_veiculo int foreign key references veiculo(id) not null
+);
+
+alter table aquisicao
+	add fk_veiculo int foreign key references veiculo(id),
+	 fk_fornecedor int foreign key references fornecedor(id)
+
+alter table revisoes
+	add fk_oficina int foreign key references oficina(id),
+	fk_veiculo int foreign key references veiculo(id)
+
+alter table veiculo
+	add fk_modelo int foreign key references modelo(id)
+
+alter table vendaabate
+	add fk_entidade int foreign key references entidade(id),
+	fk_veiculo int foreign key references veiculo(id)
+
+alter table requisicao
+	add fk_entidade int foreign key references entidade(id),
+	fk_funcinario int foreign key references funcionario(id),
+	fk_tarefa int foreign key references tarefa(id)
